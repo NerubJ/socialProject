@@ -1,14 +1,20 @@
 package com.example.social.domain;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Message {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
+    @NotBlank(message = "Fill the message")
+    @Length(max=2048, message = "Message too long")
     private String text;
+    @Length(max=255, message = "Tag too long")
     private String tag;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -54,11 +60,11 @@ public class Message {
         return text;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
