@@ -1,5 +1,7 @@
 package com.example.social.controller;
+// This is a personal academic project. Dear PVS-Studio, please check it.
 
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 import com.example.social.domain.Role;
 import com.example.social.domain.User;
 import com.example.social.service.UserService;
@@ -54,5 +56,40 @@ public class UserController {
     ){
         userService.updateProfile(user, password, email);
         return "redirect:/user/profile";
+    }
+
+    @GetMapping("subscribe/{user}")
+        public String subscribe(
+        @AuthenticationPrincipal User currentUser,
+                @PathVariable User user
+        ){
+        userService.subscribe(currentUser, user);
+
+        return "redirect:/user-messages/"+user.getId();
+    }
+    @GetMapping("unsubscribe/{user}")
+    public String unsubscribe(
+            @AuthenticationPrincipal User currentUser,
+            @PathVariable User user
+    ){
+        userService.unsubscribe(currentUser, user);
+
+        return "redirect:/user-messages/"+user.getId();
+    }
+    @GetMapping("{type}/{user}/list")
+    public String userList(
+            Model model,
+            @PathVariable User user,
+            @PathVariable String type){
+        model.addAttribute("userChannel", user);
+        model.addAttribute("type",type);
+
+        if("subscriptions".equals(type)){
+            model.addAttribute("user", user.getSubscriptions());
+        }
+        else{
+            model.addAttribute("user", user.getSubscribers());
+        }
+        return "subscriptions";
     }
 }
